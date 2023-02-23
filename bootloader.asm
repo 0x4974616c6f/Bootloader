@@ -49,13 +49,32 @@ pusha
 ;
 ;        Return  Nothing
 
+;  13h  G   40x25  8x8   320x200  256/256K  1   A000  VGA,MCGA
 
+xor cx, cx ; posição horizontal -> 0
+mov dx, 0x1e ; posição vertical -> 30
+mov ah, 0x0c
+mov al, 0x0f
+recomeca:
+int 0x10
+inc cx 
+cmp cx, 0x140
+je zeraHorizontal
+jmp recomeca
 
+fim:
 popa
 mov sp, bp
 pop bp
 ret
 
+;---------------------------------------------------------------------------
+zeraHorizontal:
+xor cx, cx
+inc dx
+cmp dx, 0xc8 ;200 decimal
+je fim
+jmp recomeca
 
 
 ;---------------------------------------------------------------------------
@@ -66,3 +85,5 @@ mensagem: db 'ME CONTRATA =D'
 ;finalizando
 times(510 - ($ - $$)) db 0x00
 dw 0xAA55
+
+;24:26
